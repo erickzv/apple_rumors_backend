@@ -18,7 +18,10 @@ nine_to_five_mac = {
 
 
 def get_news(url: str, find_tag: str):
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+    except requests.exceptions.RequestException:
+        return []
 
     soup = BeautifulSoup(response.text, "html.parser")
     h2_tags = soup.find_all(find_tag)
