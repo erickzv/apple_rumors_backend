@@ -21,8 +21,7 @@ news_urls = [
 
 @app.get("/all_news")
 def all_news():
-    news = []
-    domains = []
+    domains, news = [], []
     for data in news_urls:
         news.append(apple_news.get_news(**data))
         domains.append(data["url"][8:-4])

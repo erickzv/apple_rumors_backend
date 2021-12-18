@@ -34,8 +34,7 @@ def get_news(url: str, find_tag: str):
 
     rumors = []
     for tag in h2_tags:
-        a_tag = tag.find("a")
-        if a_tag is not None:
+        if (a_tag := tag.find("a")) is not None:
             rumors.append(News(title=a_tag.text, href=a_tag.get("href")))
         if len(rumors) == 10:
             break
