@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from pydantic import BaseModel
 
 mac_rumors = {
     "url": "https://macrumors.com",
@@ -17,6 +18,11 @@ nine_to_five_mac = {
 }
 
 
+class News(BaseModel):
+    title: str
+    href: str
+
+
 def get_news(url: str, find_tag: str):
     try:
         response = requests.get(url)
@@ -30,12 +36,7 @@ def get_news(url: str, find_tag: str):
     for tag in h2_tags:
         a_tag = tag.find("a")
         if a_tag is not None:
-            rumors.append(
-                {
-                    "title": a_tag.text,
-                    "href": a_tag.get("href")
-                }
-            )
+            rumors.append(News(title=a_tag.text, href=a_tag.get("href")))
         if len(rumors) == 10:
             break
     return rumors
