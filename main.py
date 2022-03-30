@@ -20,31 +20,14 @@ news_urls = [
 
 
 @app.get("/all_news")
-def all_news():
-    domains, news = [], []
+async def all_news():
+    domains = []
     for data in news_urls:
-        news.append(apple_news.get_news(**data))
         domains.append(data["url"][8:-4])
-    data = {
+
+    news = await apple_news.get_news(news_urls)
+
+    return {
         "news": news,
         "websites":  domains
     }
-    return data
-
-
-@app.get("/macrumors")
-def mac_rumors():
-    news = apple_news.get_news(**apple_news.mac_rumors)
-    return news
-
-
-@app.get("/apple_insiders")
-def apple_insiders():
-    news = apple_news.get_news(**apple_news.apple_insiders)
-    return news
-
-
-@app.get("/9to5mac")
-def nine_to_five_mac():
-    news = apple_news.get_news(**apple_news.nine_to_five_mac)
-    return news

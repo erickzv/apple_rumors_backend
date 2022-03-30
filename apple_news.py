@@ -1,6 +1,8 @@
-import requests
+import asyncio
+from typing import Dict
+
+import aiohttp
 from bs4 import BeautifulSoup
-from pydantic import BaseModel
 
 mac_rumors = {
     "url": "https://macrumors.com",
@@ -18,24 +20,23 @@ nine_to_five_mac = {
 }
 
 
-class News(BaseModel):
-    title: str
-    href: str
+async def parse_news(session: aiohttp.ClientSession ,url: str, find_tag: str):
+    async with session.get(url) as response:
+        soup = BeautifulSoup(await response.text(), "html.parser")
+        h2_tags = soup.find_all(find_tag)
+
+        rumors = []
+        for tag in h2_tags:
+            if (a_tag := tag.find("a")) is not None:
+                rumors.append({"title": a_tag.text, "href": a_tag.get("href")})
+            if len(rumors) == 10:
+                break
+        return rumors
 
 
-def get_news(url: str, find_tag: str):
-    try:
-        response = requests.get(url)
-    except requests.exceptions.RequestException:
-        return []
-
-    soup = BeautifulSoup(response.text, "html.parser")
-    h2_tags = soup.find_all(find_tag)
-
-    rumors = []
-    for tag in h2_tags:
-        if (a_tag := tag.find("a")) is not None:
-            rumors.append(News(title=a_tag.text, href=a_tag.get("href")))
-        if len(rumors) == 10:
-            break
-    return rumors
+async def get_news(news_urls: Dict[str, str]):
+    async with aiohttp.ClientSession() as session:
+        tasks = []
+        for data in news_urls:
+            tasks.append(parse_news(session, **data))
+        return await asyncio.gather(*tasks)
