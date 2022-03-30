@@ -22,11 +22,11 @@ nine_to_five_mac = {
 
 async def parse_news(session: aiohttp.ClientSession ,url: str, find_tag: str):
     async with session.get(url) as response:
-        soup = BeautifulSoup(await response.text(), "html.parser")
-        h2_tags = soup.find_all(find_tag)
+        soup = BeautifulSoup(await response.text(), "lxml")
+        tags = soup.find_all(find_tag)
 
         rumors = []
-        for tag in h2_tags:
+        for tag in tags:
             if (a_tag := tag.find("a")) is not None:
                 rumors.append({"title": a_tag.text, "href": a_tag.get("href")})
             if len(rumors) == 10:
@@ -35,8 +35,9 @@ async def parse_news(session: aiohttp.ClientSession ,url: str, find_tag: str):
 
 
 async def get_news(news_urls: Dict[str, str]):
+    tasks, domains = [], []
     async with aiohttp.ClientSession() as session:
-        tasks = []
         for data in news_urls:
             tasks.append(parse_news(session, **data))
-        return await asyncio.gather(*tasks)
+            domains.append(data["url"][8:-4])
+        return await asyncio.gather(*tasks), domains

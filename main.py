@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import ORJSONResponse
 
 import apple_news
 
@@ -19,13 +20,9 @@ news_urls = [
 ]
 
 
-@app.get("/all_news")
+@app.get("/all_news", response_class=ORJSONResponse)
 async def all_news():
-    domains = []
-    for data in news_urls:
-        domains.append(data["url"][8:-4])
-
-    news = await apple_news.get_news(news_urls)
+    news, domains = await apple_news.get_news(news_urls)
 
     return {
         "news": news,

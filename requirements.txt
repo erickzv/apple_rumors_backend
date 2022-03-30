@@ -1,7 +1,10 @@
 fastapi
 uvicorn
+wheel
 pytest
 beautifulsoup4
-aiohttp
+aiohttp[speedups]
+lxml
+orjson
 
 gunicorn
