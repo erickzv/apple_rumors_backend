@@ -23,7 +23,6 @@ news_urls = [
 @app.get("/all_news", response_class=ORJSONResponse)
 async def all_news():
     news, domains = await apple_news.get_news(news_urls)
-
     return {
         "news": news,
         "websites":  domains

@@ -20,7 +20,7 @@ nine_to_five_mac = {
 }
 
 
-async def parse_news(session: aiohttp.ClientSession ,url: str, find_tag: str):
+async def parse_news(session: aiohttp.ClientSession, url: str, find_tag: str):
     async with session.get(url) as response:
         soup = BeautifulSoup(await response.text(), "lxml")
         tags = soup.find_all(find_tag)
