@@ -13,11 +13,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-news_urls = [
+news_urls = (
     apple_news.mac_rumors,
     apple_news.apple_insiders,
     apple_news.nine_to_five_mac
-]
+)
 
 
 @app.get("/all_news", response_class=ORJSONResponse)
@@ -25,5 +25,5 @@ async def all_news():
     news, domains = await apple_news.get_news(news_urls)
     return {
         "news": news,
-        "websites":  domains
+        "websites": domains
     }
