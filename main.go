@@ -97,5 +97,5 @@ func main() {
 		w.Header().Add("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(Scrape())
 	})
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(":80", nil)
 }
