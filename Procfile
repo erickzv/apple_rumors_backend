@@ -1,1 +1,1 @@
-web: go run main.go
+web: bin/apple_rumors_backend

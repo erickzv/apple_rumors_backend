@@ -97,5 +97,11 @@ func main() {
 		w.Header().Add("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(Scrape())
 	})
-	http.ListenAndServe(":80", nil)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = ":8000" // Default port if not specified
+	} else {
+		port = ":" + port
+	}
+	http.ListenAndServe(port, nil)
 }
