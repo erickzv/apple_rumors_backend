@@ -1,4 +1,4 @@
-This api scrapes Apple related rumors
+This API scrapes Apple related rumors
 
 You can find the API live at https://apple-rumors.herokuapp.com/all_news
 
