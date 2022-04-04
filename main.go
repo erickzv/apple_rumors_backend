@@ -75,10 +75,6 @@ func Scrape() ApiRes {
 			Url: "https://machash.com",
 			FindTag: "h2",
 		},
-		{
-			Url: "https://imore.com",
-			FindTag: "h3",
-		},
 	}
 
 	var urls []string
