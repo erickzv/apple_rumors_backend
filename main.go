@@ -26,7 +26,7 @@ type ApiRes struct {
 
 func ParseSoup(tags []soup.Root) []News {
 	// finds every <tag> inside tags, we look for an <a>
-	news := []News{}
+	var news []News
 	aTagCount := 0
 	for i := 0; i < len(tags) && aTagCount < 10; i++ {
 		aTag := tags[i].Find("a")
@@ -72,13 +72,13 @@ func Scrape() ApiRes {
 			FindTag: "h1",
 		},
 		{
-			Url: "https://machash.com",
+			Url:     "https://machash.com",
 			FindTag: "h2",
 		},
 	}
 
 	var urls []string
-	news := [][]News{}
+	var news [][]News
 	var wg = sync.WaitGroup{}
 
 	for i := 0; i < len(websites); i++ {
@@ -96,16 +96,19 @@ func Scrape() ApiRes {
 	return ApiRes{News: news, Websites: urls}
 }
 
+func Port() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Default port if not specified
+	}
+	return ":" + port
+}
+
 func main() {
 	http.HandleFunc("/all_news", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(Scrape())
 	})
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = ":8000" // Default port if not specified
-	} else {
-		port = ":" + port
-	}
-	http.ListenAndServe(port, nil)
+
+	http.ListenAndServe(Port(), nil)
 }
