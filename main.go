@@ -19,11 +19,6 @@ type News struct {
 	Href  string `json:"href"`
 }
 
-type ApiRes struct {
-	News     [][]News `json:"news"`
-	Websites []string `json:"websites"`
-}
-
 // finds every <tag> inside tags, we look for an <a>
 func ParseSoup(tags []soup.Root) []News {
 	var news []News
@@ -50,15 +45,7 @@ func GetSoup(website Website) []soup.Root {
 	return doc.FindAll(website.FindTag)
 }
 
-func ParseUrl(url string) string {
-	website := ""
-	for i := 8; i < len(url)-4; i++ {
-		website += string(url[i])
-	}
-	return website
-}
-
-func Scrape() ApiRes {
+func Scrape() map[string][]News {
 	websites := []Website{
 		{
 			Url:     "https://macrumors.com",
@@ -78,23 +65,21 @@ func Scrape() ApiRes {
 		},
 	}
 
-	var urls []string
-	var news [][]News
+	data := make(map[string][]News)
 	var wg = sync.WaitGroup{}
 
 	for i := 0; i < len(websites); i++ {
 		website := websites[i]
 		wg.Add(1)
 		go func() {
-			s := GetSoup(website)
-			news = append(news, ParseSoup(s))
-			urls = append(urls, ParseUrl(website.Url))
+			soup := GetSoup(website)
+			data[website.Url] = ParseSoup(soup)
 			wg.Done()
 		}()
 	}
 
 	wg.Wait()
-	return ApiRes{News: news, Websites: urls}
+	return data
 }
 
 // Defines a port to listen on
