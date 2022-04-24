@@ -40,10 +40,11 @@ func ParseSoup(tags []soup.Root) []News {
 	return news
 }
 
+// Requests Html from a website and returns all tags that match the findTag
 func GetSoup(website Website) []soup.Root {
 	res, err := soup.Get(website.Url)
 	if err != nil {
-		os.Exit(1)
+		panic(err)
 	}
 	doc := soup.HTMLParse(res)
 	return doc.FindAll(website.FindTag)
@@ -96,10 +97,11 @@ func Scrape() ApiRes {
 	return ApiRes{News: news, Websites: urls}
 }
 
+// Defines a port to listen on
 func Port() string {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // Default port if not specified
+		port = "8080"
 	}
 	return ":" + port
 }
