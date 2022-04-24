@@ -24,8 +24,8 @@ type ApiRes struct {
 	Websites []string `json:"websites"`
 }
 
+// finds every <tag> inside tags, we look for an <a>
 func ParseSoup(tags []soup.Root) []News {
-	// finds every <tag> inside tags, we look for an <a>
 	var news []News
 	aTagCount := 0
 	for i := 0; i < len(tags) && aTagCount < 10; i++ {
