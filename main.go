@@ -107,8 +107,14 @@ func Port() string {
 func main() {
 	http.HandleFunc("/all_news", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(Scrape())
+		err := json.NewEncoder(w).Encode(Scrape())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	})
 
-	http.ListenAndServe(Port(), nil)
+	err := http.ListenAndServe(Port(), nil)
+	if err != nil {
+		panic(err)
+	}
 }
