@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/anaskhan96/soup"
@@ -19,8 +20,15 @@ type News struct {
 	Href  string `json:"href"`
 }
 
+// Removes http(s):// & .com
+func ParseHref(href string, length int) string {
+	parsed := href[length:]
+	parsed = strings.TrimPrefix(parsed, ".com")
+	return parsed
+}
+
 // finds every <tag> inside tags, we look for an <a>
-func ParseSoup(tags []soup.Root) []News {
+func ParseSoup(tags []soup.Root, length int) []News {
 	var news []News
 	aTagCount := 0
 	for i := 0; i < len(tags) && aTagCount < 10; i++ {
@@ -28,7 +36,7 @@ func ParseSoup(tags []soup.Root) []News {
 		if aTag.Error == nil {
 			aTagCount++
 			news = append(news, News{
-				Title: aTag.Text(), Href: aTag.Attrs()["href"],
+				Title: aTag.Text(), Href: ParseHref(aTag.Attrs()["href"], length),
 			})
 		}
 	}
@@ -59,10 +67,6 @@ func Scrape() map[string][]News {
 			Url:     "https://9to5mac.com",
 			FindTag: "h1",
 		},
-		{
-			Url:     "https://machash.com",
-			FindTag: "h2",
-		},
 	}
 
 	data := make(map[string][]News)
@@ -73,7 +77,7 @@ func Scrape() map[string][]News {
 		wg.Add(1)
 		go func() {
 			soup := GetSoup(website)
-			data[website.Url] = ParseSoup(soup)
+			data[website.Url] = ParseSoup(soup, len(website.Url))
 			wg.Done()
 		}()
 	}
