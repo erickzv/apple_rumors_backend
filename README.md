@@ -7,7 +7,19 @@ You can find the API live at https://apple-rumors.herokuapp.com/all_news
 
 This API uses GO and the soup library
 
-Made with ❤️
+## API structure
+
+```json
+{
+  "https://url.com": [
+    {
+      "title": "Apple Rumors",
+      "href": "/apple/rumor/path"
+    }
+  ]
+}
+```
+Now append the href to the url and now you have a complete url
 
 ## Setup
 Start by cloning the repo, once that done all you need to do is `go run main.go`
@@ -15,3 +27,5 @@ Start by cloning the repo, once that done all you need to do is `go run main.go`
 For the docker container run `docker build .`
 
 This already has the necessary files to be deployed in GCloud & Heroku
+
+Made with ❤️ & GO
