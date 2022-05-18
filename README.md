@@ -8,9 +8,19 @@ You can find the API live at https://apple-rumors.herokuapp.com/all_news
 This API uses GO and the soup library
 
 ## API structure
-
+`/all_news`
 ```json
 {
+  "https://url.com": [
+    {
+      "title": "Apple Rumors",
+      "href": "/apple/rumor/path"
+    },
+    {
+      "title": "Apple Rumors",
+      "href": "/apple/rumor/path"
+    }
+  ],
   "https://url.com": [
     {
       "title": "Apple Rumors",
