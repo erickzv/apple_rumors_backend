@@ -36,6 +36,6 @@ Start by cloning the repo, once that done all you need to do is `go run main.go`
 
 For the docker container run `docker build .`
 
-This already has the necessary files to be deployed in GCloud & Heroku
+This project already has the necessary files to be deployed in GCloud & Heroku
 
 Made with ❤️ & GO
