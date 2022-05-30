@@ -6,6 +6,6 @@ COPY . .
 
 RUN go mod download
 
-RUN go build -o app
+RUN go build -o server
 
-CMD ["./app"]
+CMD ["./server"]
