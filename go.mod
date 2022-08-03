@@ -1,4 +1,4 @@
-module github.com/poximy/apple_rumors_backend
+module github.com/poximy/apple-rumors-backend
 
 // +heroku goVersion go1.17
 go 1.17
