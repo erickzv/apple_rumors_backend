@@ -32,6 +32,8 @@ This API uses GO and the soup library
 Now append the href to the url and now you have a complete url
 
 ## Setup
+System requirements: `go 1.17` & `docker`
+
 Start by cloning the repo, once that done all you need to do is `go run main.go`
 
 For the docker container run `docker build .`
