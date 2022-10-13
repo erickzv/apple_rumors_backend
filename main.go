@@ -20,14 +20,14 @@ type News struct {
 	Href  string `json:"href"`
 }
 
-// Removes http(s):// & .com
+// ParseHref removes "http(s)://" & ".com"
 func ParseHref(href string, length int) string {
 	parsed := href[length:]
 	parsed = strings.TrimPrefix(parsed, ".com")
 	return parsed
 }
 
-// finds every <tag> inside tags, we look for an <a>
+// ParseSoup finds every <tag> inside tags, we look for <a> tag
 func ParseSoup(tags []soup.Root, length int) []News {
 	var news []News
 	aTagCount := 0
@@ -43,7 +43,7 @@ func ParseSoup(tags []soup.Root, length int) []News {
 	return news
 }
 
-// Requests Html from a website and returns all tags that match the findTag
+// GetSoup requests Html from a website and returns all tags that match the findTag
 func GetSoup(website Website) []soup.Root {
 	res, err := soup.Get(website.Url)
 	if err != nil {
@@ -86,7 +86,7 @@ func Scrape() map[string][]News {
 	return data
 }
 
-// Defines a port to listen on
+// Port defines a port to listen on
 func Port() string {
 	port := os.Getenv("PORT")
 	if port == "" {
