@@ -76,8 +76,8 @@ func Scrape() map[string][]News {
 		website := websites[i]
 		wg.Add(1)
 		go func() {
-			soup := GetSoup(website)
-			data[website.Url] = ParseSoup(soup, len(website.Url))
+			htmlSoup := GetSoup(website)
+			data[website.Url] = ParseSoup(htmlSoup, len(website.Url))
 			wg.Done()
 		}()
 	}
