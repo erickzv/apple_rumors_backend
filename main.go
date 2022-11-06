@@ -1,13 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
 	"os"
 	"strings"
 	"sync"
 
 	"github.com/anaskhan96/soup"
+	"github.com/goccy/go-json"
 )
 
 type Website struct {
