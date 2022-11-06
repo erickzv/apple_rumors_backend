@@ -1,7 +1,7 @@
 # Apple Rumors
 This API scrapes Apple related rumors
 
-Web App is live at https://apple-rumors.vercel.app
+Web App is live at https://apple.poximy.com
 
 You can find the API live at https://apple-rumors.herokuapp.com/all_news
 
