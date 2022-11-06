@@ -15,46 +15,48 @@ type Website struct {
 	FindTag string
 }
 
-type News struct {
-	Title string `json:"title"`
-	Href  string `json:"href"`
-}
-
-// ParseHref removes "http(s)://" & ".com"
-func ParseHref(href string, length int) string {
-	parsed := href[length:]
-	parsed = strings.TrimPrefix(parsed, ".com")
-	return parsed
+// GetSoup requests Html from a website and returns all tags that match the findTag
+func (w Website) GetSoup() []soup.Root {
+	res, err := soup.Get(w.Url)
+	if err != nil {
+		panic(err)
+	}
+	doc := soup.HTMLParse(res)
+	return doc.FindAll(w.FindTag)
 }
 
 // ParseSoup finds every <tag> inside tags, we look for <a> tag
-func ParseSoup(tags []soup.Root, length int) []News {
+func (w Website) ParseSoup(tags []soup.Root) []News {
 	var news []News
 	aTagCount := 0
 	for i := 0; i < len(tags) && aTagCount < 10; i++ {
 		aTag := tags[i].Find("a")
+        urlLength := len(w.Url)
 		if aTag.Error == nil {
 			aTagCount++
 			news = append(news, News{
-				Title: aTag.Text(), Href: ParseHref(aTag.Attrs()["href"], length),
+				Title: aTag.Text(), Href: w.ParseHref(aTag.Attrs()["href"], urlLength),
 			})
 		}
 	}
 	return news
 }
 
-// GetSoup requests Html from a website and returns all tags that match the findTag
-func GetSoup(website Website) []soup.Root {
-	res, err := soup.Get(website.Url)
-	if err != nil {
-		panic(err)
-	}
-	doc := soup.HTMLParse(res)
-	return doc.FindAll(website.FindTag)
+// ParseHref removes "http(s)://" & ".com"
+func (w Website) ParseHref(href string, length int) string {
+    parsed := href[length:]
+    parsed = strings.TrimPrefix(parsed, ".com")
+    return parsed
+}
+
+type News struct {
+	Title string `json:"title"`
+	Href  string `json:"href"`
 }
 
 func Scrape() map[string][]News {
-	websites := []Website{
+	// FIXME Should be a global variable
+	websites := [3]Website{
 		{
 			Url:     "https://macrumors.com",
 			FindTag: "h2",
@@ -70,14 +72,14 @@ func Scrape() map[string][]News {
 	}
 
 	data := make(map[string][]News)
-	var wg = sync.WaitGroup{}
+	wg := sync.WaitGroup{}
 
 	for i := 0; i < len(websites); i++ {
 		website := websites[i]
 		wg.Add(1)
 		go func() {
-			htmlSoup := GetSoup(website)
-			data[website.Url] = ParseSoup(htmlSoup, len(website.Url))
+			htmlSoup := website.GetSoup()
+			data[website.Url] = website.ParseSoup(htmlSoup)
 			wg.Done()
 		}()
 	}
