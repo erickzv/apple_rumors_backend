@@ -1,0 +1,13 @@
+.git/
+
+.gitignore
+.dockerignore
+.gcloudignore
+
+Dockerfile
+Procfile
+
+README.md
+LICENSE
+
+.DS_Store
