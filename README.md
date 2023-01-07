@@ -3,7 +3,7 @@ This API scrapes Apple related rumors
 
 Web App is live at https://apple.poximy.com
 
-You can find the API live at https://apple-rumors.herokuapp.com/all_news
+You can find the API live at https://api.apple.poximy.com/all_news
 
 This API uses GO and the soup library
 
