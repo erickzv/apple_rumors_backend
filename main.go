@@ -67,7 +67,7 @@ func Scrape() map[string][]News {
 		},
 		{
 			Url:     "https://9to5mac.com",
-			FindTag: "h1",
+			FindTag: "h2",
 		},
 	}
 
