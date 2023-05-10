@@ -31,7 +31,7 @@ func (w Website) ParseSoup(tags []soup.Root) []News {
 	aTagCount := 0
 	for i := 0; i < len(tags) && aTagCount < 10; i++ {
 		aTag := tags[i].Find("a")
-        urlLength := len(w.Url)
+		urlLength := len(w.Url)
 		if aTag.Error == nil {
 			aTagCount++
 			news = append(news, News{
@@ -44,9 +44,9 @@ func (w Website) ParseSoup(tags []soup.Root) []News {
 
 // ParseHref removes "http(s)://" & ".com"
 func (w Website) ParseHref(href string, length int) string {
-    parsed := href[length:]
-    parsed = strings.TrimPrefix(parsed, ".com")
-    return parsed
+	parsed := href[length:]
+	parsed = strings.TrimPrefix(parsed, ".com")
+	return parsed
 }
 
 type News struct {
