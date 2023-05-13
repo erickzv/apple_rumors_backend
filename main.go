@@ -27,9 +27,10 @@ func (w Website) GetSoup() []soup.Root {
 
 // ParseSoup finds every <tag> inside tags, we look for <a> tag
 func (w Website) ParseSoup(tags []soup.Root) []News {
-	var news []News
-	aTagCount := 0
-	for i := 0; i < len(tags) && aTagCount < 10; i++ {
+	aTagCount, maximum := 0, 16
+	news := make([]News, 0, maximum)
+
+	for i := 0; i < len(tags) && aTagCount < maximum; i++ {
 		aTag := tags[i].Find("a")
 		urlLength := len(w.Url)
 		if aTag.Error == nil {
