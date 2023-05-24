@@ -72,7 +72,7 @@ func Scrape() map[string][]News {
 		},
 	}
 
-	data := make(map[string][]News)
+	data := map[string][]News{}
 	wg := sync.WaitGroup{}
 
 	for i := 0; i < len(websites); i++ {
