@@ -10,19 +10,19 @@ import (
 )
 
 var websites [3]Website = [3]Website{
-		{
-			Domain:  "macrumors",
-			FindTag: "h2",
-		},
-		{
-			Domain:  "appleinsider",
-			FindTag: "h2",
-		},
-		{
-			Domain:  "9to5mac",
-			FindTag: "h2",
-		},
-	}
+	{
+		Domain:  "macrumors",
+		FindTag: "h2",
+	},
+	{
+		Domain:  "appleinsider",
+		FindTag: "h2",
+	},
+	{
+		Domain:  "9to5mac",
+		FindTag: "h2",
+	},
+}
 
 type Website struct {
 	Domain  string
