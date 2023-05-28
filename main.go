@@ -9,6 +9,21 @@ import (
 	"github.com/goccy/go-json"
 )
 
+var websites [3]Website = [3]Website{
+		{
+			Domain:  "macrumors",
+			FindTag: "h2",
+		},
+		{
+			Domain:  "appleinsider",
+			FindTag: "h2",
+		},
+		{
+			Domain:  "9to5mac",
+			FindTag: "h2",
+		},
+	}
+
 type Website struct {
 	Domain  string
 	FindTag string
@@ -72,22 +87,6 @@ type News struct {
 }
 
 func Scrape() map[string][]News {
-	// FIXME Should be a global variable
-	websites := [3]Website{
-		{
-			Domain:  "macrumors",
-			FindTag: "h2",
-		},
-		{
-			Domain:  "appleinsider",
-			FindTag: "h2",
-		},
-		{
-			Domain:  "9to5mac",
-			FindTag: "h2",
-		},
-	}
-
 	data := make(map[string][]News, len(websites))
 	wg := sync.WaitGroup{}
 
