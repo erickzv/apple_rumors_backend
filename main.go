@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"os"
-	"strings"
 	"sync"
 
 	"github.com/anaskhan96/soup"
@@ -11,43 +10,60 @@ import (
 )
 
 type Website struct {
-	Url     string
+	Domain  string
 	FindTag string
 }
 
 // GetSoup requests Html from a website and returns all tags that match the findTag
-func (w Website) GetSoup() []soup.Root {
-	res, err := soup.Get(w.Url)
+func (w Website) GetSoup() (string, []soup.Root) {
+	url := "https://" + w.Domain + ".com"
+	res, err := soup.Get(url)
 	if err != nil {
 		panic(err)
 	}
 	doc := soup.HTMLParse(res)
-	return doc.FindAll(w.FindTag)
+	return url, doc.FindAll(w.FindTag)
 }
 
-// ParseSoup finds every <tag> inside tags, we look for <a> tag
+// ParseSoup finds every <a> inside tags
 func (w Website) ParseSoup(tags []soup.Root) []News {
-	aTagCount, maximum := 0, 16
+	TagCount, maximum := 0, 16
 	news := make([]News, 0, maximum)
 
-	for i := 0; i < len(tags) && aTagCount < maximum; i++ {
+	deleteAmount := 0
+
+	for i := 0; i < len(tags) && TagCount < maximum; i++ {
 		aTag := tags[i].Find("a")
-		urlLength := len(w.Url)
-		if aTag.Error == nil {
-			aTagCount++
-			news = append(news, News{
-				Title: aTag.Text(), Href: w.ParseHref(aTag.Attrs()["href"], urlLength),
-			})
+		if aTag.Error != nil {
+			continue
 		}
+
+		href := aTag.Attrs()["href"]
+
+		if deleteAmount == 0 {
+			cleanHref(href, &deleteAmount)
+		}
+
+		path := href[deleteAmount:]
+		news = append(news, News{aTag.Text(), path})
+		TagCount++
 	}
 	return news
 }
 
-// ParseHref removes "http(s)://" & ".com"
-func (w Website) ParseHref(href string, length int) string {
-	parsed := href[length:]
-	parsed = strings.TrimPrefix(parsed, ".com")
-	return parsed
+func cleanHref(href string, amount *int) {
+	slashCount := 0
+	for _, character := range href {
+		if string(character) == "/" {
+			slashCount++
+		}
+
+		if slashCount == 3 {
+			break
+		}
+
+		*amount++
+	}
 }
 
 type News struct {
@@ -59,29 +75,31 @@ func Scrape() map[string][]News {
 	// FIXME Should be a global variable
 	websites := [3]Website{
 		{
-			Url:     "https://macrumors.com",
+			Domain:  "macrumors",
 			FindTag: "h2",
 		},
 		{
-			Url:     "https://appleinsider.com",
+			Domain:  "appleinsider",
 			FindTag: "h2",
 		},
 		{
-			Url:     "https://9to5mac.com",
+			Domain:  "9to5mac",
 			FindTag: "h2",
 		},
 	}
 
-	data := map[string][]News{}
+	data := make(map[string][]News, len(websites))
 	wg := sync.WaitGroup{}
 
 	for i := 0; i < len(websites); i++ {
 		website := websites[i]
+
 		wg.Add(1)
 		go func() {
-			htmlSoup := website.GetSoup()
-			data[website.Url] = website.ParseSoup(htmlSoup)
-			wg.Done()
+			defer wg.Done()
+
+			url, htmlSoup := website.GetSoup()
+			data[url] = website.ParseSoup(htmlSoup)
 		}()
 	}
 
