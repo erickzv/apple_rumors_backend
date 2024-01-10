@@ -1,4 +1,4 @@
-FROM golang:1.19-bullseye as build
+FROM golang:bookworm as build
 
 WORKDIR /go/src/app
 
@@ -6,10 +6,12 @@ COPY . .
 
 RUN go mod download
 
-RUN CGO_ENABLED=0 go build -o /go/bin/app
+RUN go build -o /go/bin/app
 
-FROM gcr.io/distroless/static-debian11
+FROM gcr.io/distroless/static-debian12
 
-COPY --from=build /go/bin/app /
+COPY --from=buil /go/bin/app /
+
+COPY src/ src/
 
 CMD ["./app"]
