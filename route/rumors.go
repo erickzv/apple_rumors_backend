@@ -1,8 +1,8 @@
 package route
 
 import (
+	"encoding/json"
 	"errors"
-	"html/template"
 	"io"
 	"net/http"
 	"strings"
@@ -12,19 +12,12 @@ import (
 	"github.com/anaskhan96/soup"
 )
 
-var tmplt *template.Template
 var data []website
 
 func init() {
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 
-	go func() {
-		const filePath string = "./src/index.gohtml"
-		html := fileLoader(filePath)
-		tmplt = loadTemplate("index", html)
-		wg.Done()
-	}()
 	go func() {
 		data = scrape()
 		if len(data) != len(websites) {
@@ -39,8 +32,11 @@ func init() {
 }
 
 func Rumors(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	tmplt.Execute(w, data)
+	w.Header().Add("Content-Type", "application/json")
+	err := json.NewEncoder(w).Encode(data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func refresh() {
@@ -57,7 +53,7 @@ func refresh() {
 	}
 }
 
-var websites = [3]string{"macrumors", "appleinsider", "9to5mac"}
+var websites = [3]string{"theverge", "appleinsider", "9to5mac"}
 
 type website struct {
 	Name   string

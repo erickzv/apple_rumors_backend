@@ -1,9 +1,6 @@
 # macOS
 .DS_Store
 
-# frontend
-public/styles.css
-
 /node_modules
 
 # database

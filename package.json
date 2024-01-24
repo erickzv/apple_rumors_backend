@@ -1,25 +1,22 @@
 {
-  "name": "ohmyapple",
+  "name": "snoopy",
   "version": "1.0.0",
   "author": "poximy",
-  "description": "Apple news & rumors",
+  "description": "snoopy backend",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/poximy/ohmyapple"
   },
   "scripts": {
-    "format": "prettier --write . && prettier --write src/index.gohtml && go fmt .",
+    "format": "go fmt .",
     "dev": "pnpm nodemon"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2",
-    "prettier": "^3.1.1",
-    "prettier-plugin-go-template": "^0.0.15",
-    "prettier-plugin-tailwindcss": "^0.5.11"
+    "nodemon": "^3.0.2"
   },
   "nodemonConfig": {
     "signal": "SIGTERM",
     "exec": "go run main.go",
-    "ext": "go, gohtml"
+    "ext": "go"
   }
 }
